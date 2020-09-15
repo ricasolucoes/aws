@@ -1,0 +1,72 @@
+{
+    "name": "ricasolucoes/aws",
+    "description": "AWS",
+    "type": "library",
+    "keywords": [
+        "aws"
+    ],
+    "homepage": "https://github.com/ricasolucoes/aws",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
+        "barryvdh/laravel-ide-helper": "^2.6",
+        "fzaninotto/faker": "^1.4",
+        "laravel/browser-kit-testing": "^6.0",
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^9.0",
+        "squizlabs/php_codesniffer": "^3.4",
+        "laravel/dusk": "^6.2",
+        "codedungeon/phpunit-result-printer": ">=0.27.0",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "orchestra/testbench": "^6.0",
+        "psalm/plugin-laravel": "^1.2",
+        "vimeo/psalm": "^3.11"
+    },
+    "authors": [
+        {
+            "name": "RiCa Soluções",
+            "email": "contato@ricasolucoes.com.br",
+            "homepage": "https://ricasolucoes.com.br"
+        }
+    ],
+    "autoload": {
+        "psr-4" : {
+            "Aws\\" : "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+   "extra": {
+      "laravel": {
+          "providers": [
+              "Aws\\AwsProvider"
+          ],
+          "aliases": {
+              "Aws": "Aws\\Facades\\Aws"
+          },
+          "dont-discover": []
+      }
+  },
+  "scripts": {
+    "psalm": "vendor/bin/psalm",
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+    "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+  },
+  "config": {
+      "optimize-autoloader": true,
+      "preferred-install": "dist",
+      "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
