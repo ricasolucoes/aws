@@ -19,7 +19,7 @@ class Ssm
     /**
      * initialize - return authenticated ssm object
      *
-     * @param string $region Region
+     * @param string $region  Region
      * @param string $version Version
      *
      * @return bool
@@ -53,12 +53,12 @@ class Ssm
      * sendCommand - execute an ssm document against an inclusive set of tags based on the SCIVE, returning a command id
      *
      * @param string $documentName Document name
-     * @param array $service Service
-     * @param array $country Country
-     * @param array $interface Interface
-     * @param array $variant Variant
-     * @param array $environment Environment
-     * @param bool $runShell If set to true we run a shell command instead of a document
+     * @param array  $service      Service
+     * @param array  $country      Country
+     * @param array  $interface    Interface
+     * @param array  $variant      Variant
+     * @param array  $environment  Environment
+     * @param bool   $runShell     If set to true we run a shell command instead of a document
      *
      * @return string Command ID
      */
@@ -177,10 +177,12 @@ class Ssm
 
     public function getCommandShellOutput($commandId, $instanceId)
     {
-        $result = $this->client->getCommandInvocation([
+        $result = $this->client->getCommandInvocation(
+            [
             'CommandId' => $commandId,
             'InstanceId' => $instanceId
-        ]);
+            ]
+        );
 
         return ['stdout' => $result['StandardOutputContent'], 'stderr' => $result['StandardErrorContent']];
     }

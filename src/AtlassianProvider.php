@@ -19,9 +19,11 @@ class AwsProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
+        $this->publishes(
+            [
             __DIR__.'/../publishes/config/aws.php' => config_path('aws.php'),
-        ], 'config');
+            ], 'config'
+        );
 
         // View::composer(
         //     'kanban', 'App\Http\ViewComposers\KanbanComposer'
@@ -32,32 +34,42 @@ class AwsProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
-        $this->publishes([
+        $this->publishes(
+            [
             __DIR__.'/../database/migrations/' => database_path('migrations')
-        ], 'migrations');
+            ], 'migrations'
+        );
         
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'aws');
-        $this->publishes([
+        $this->publishes(
+            [
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/aws'),
-        ]);
+            ]
+        );
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'aws');
-        $this->publishes([
+        $this->publishes(
+            [
             __DIR__.'/../resources/views' => resource_path('views/vendor/aws'),
-        ]);
+            ]
+        );
 
 
         if ($this->app->runningInConsole()) {
-            $this->commands([
+            $this->commands(
+                [
                 TokensSync::class,
-            ]);
+                ]
+            );
         }
 
         // Assets
 
-        $this->publishes([
+        $this->publishes(
+            [
             __DIR__.'/../publishes/assets' => public_path('vendor/aws'),
-        ], 'public');
+            ], 'public'
+        );
     }
 
     /**
@@ -68,13 +80,15 @@ class AwsProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../publishes/config/aws.php', 'aws'
         );
-        $this->app->singleton(AdminLte::class, function (Container $app) {
-            return new AdminLte(
-                $app['config']['adminlte.filters'],
-                $app['events'],
-                $app
-            );
-        });
+        $this->app->singleton(
+            AdminLte::class, function (Container $app) {
+                return new AdminLte(
+                    $app['config']['adminlte.filters'],
+                    $app['events'],
+                    $app
+                );
+            }
+        );
     }
     
     /**

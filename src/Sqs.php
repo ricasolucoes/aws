@@ -18,7 +18,7 @@ class Sqs
     /**
      * initialize - return authenticated sqs object
      *
-     * @param string $uri URI
+     * @param string $uri      URI
      * @param string $username Username
      * @param string $password Password
      *
@@ -41,18 +41,18 @@ class Sqs
     public function authenticate()
     {
         $this->client = new SqsClient(
-        [
-        'region' => $this->region,
-        'version' => $this->version
-        ]
-    );
+            [
+            'region' => $this->region,
+            'version' => $this->version
+            ]
+        );
         return $this->client;
     }
 
     /**
      * deleteMessage - try to delete a message from the queue
      *
-     * @param array $msg Array Result from getMessage
+     * @param  array $msg Array Result from getMessage
      * @return mixed
      */
     public function deleteMessage($msg, $queueurl = false, $receiptHandle = false)
@@ -68,7 +68,7 @@ class Sqs
         } else {
             $data['ReceiptHandle'] = $msg['allData']['ReceiptHandle'];
         }
-        # echo var_export($data, true) . "\n";
+        // echo var_export($data, true) . "\n";
         file_put_contents("/tmp/del2.txt", "trying to delete\n", FILE_APPEND);
         $result = $this->client->deleteMessage($data);
         file_put_contents("/tmp/del.txt", "res: " . var_export($result, true) . "\n", FILE_APPEND);
@@ -107,7 +107,7 @@ class Sqs
     /**
      * sendMessage - immediately send a message
      *
-     * @param array $params Message params
+     * @param  array $params Message params
      * @return mixed
      */
     public function sendMessage($params)
@@ -127,8 +127,8 @@ class Sqs
     /**
      * logMessage - save reconstituted details of a message for later analysis
      *
-     * @param array $msg Message
-     * @param string $msgSource Message source
+     * @param  array  $msg       Message
+     * @param  string $msgSource Message source
      * @return mixed
      */
     public function logMessage($msg, $msgSource = 'unknown')
@@ -163,7 +163,7 @@ class Sqs
         file_put_contents("/tmp/sqs-preconstituted.log", $reconstitutedString, FILE_APPEND);
 
         $tempDir = '/tmp/sqs/msgsAttempted/' . date('Y-m-d') . '/';
-        $tempFile = date('Y-m-d H:i:s') . '-' . $msgSource . '-' . time() . '-' . rand(10000,99999) . '.txt';
+        $tempFile = date('Y-m-d H:i:s') . '-' . $msgSource . '-' . time() . '-' . rand(10000, 99999) . '.txt';
         $tempPath = $tempDir . $tempFile;
         `mkdir -p $tempDir`;
         file_put_contents($tempPath, $reconstitutedString);
@@ -249,7 +249,7 @@ class Sqs
     /**
      * stashMessage - put a message to one side so it can be bulk sent later using sendMessages
      *
-     * @param array $params Message params
+     * @param  array $params Message params
      * @return mixed
      */
     public function stashMessage($params)
@@ -261,7 +261,7 @@ class Sqs
     /**
      * prepMessage - bundle a message up ready for sending
      *
-     * @param array $params Message params
+     * @param  array $params Message params
      * @return mixed
      */
     protected function prepMessage($params)
@@ -274,7 +274,7 @@ class Sqs
                 'MessageBody' => $params['key'] . " " . $params['command'] . " '" . $params['parameter'] . "' in " . ucfirst($params['system']) . "  because " . $params['because'] . " via " . $params['via'],
                 'MessageGroupId' => $params['key'],
                 'MessageAttributes' => []
-    ];
+        ];
 
         $commandData = [];
         $metaData = [];
@@ -282,7 +282,7 @@ class Sqs
             if (preg_match("/^command/", $k)) {
                 if ($k == 'commandEmailData') {
                     $tempDir = '/tmp/sqs/email/' . date('Y-m-d') . '/';
-                    $tempFile = date('Y-m-d H:i:s') . '-' . rand(10000,99999) . '.txt';
+                    $tempFile = date('Y-m-d H:i:s') . '-' . rand(10000, 99999) . '.txt';
                     $tempPath = $tempDir . $tempFile;
 
                     $emailData = json_decode($v, true);
@@ -333,7 +333,7 @@ class Sqs
     /**
      * setRegion - set the effective region
      *
-     * @param string $region Aws region string
+     * @param  string $region Aws region string
      * @return string $region
      */
     public function setRegion($region)
