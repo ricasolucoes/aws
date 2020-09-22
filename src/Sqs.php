@@ -2,7 +2,7 @@
 
 namespace Aws;
 
-use \Aws\Exception\AwsException;
+use \Aws\Exceptions\AwsException;
 use \Aws\Sqs\SqsClient;
 
 /**
