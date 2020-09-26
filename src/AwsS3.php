@@ -19,6 +19,7 @@ class AwsS3
 
     /**
      * 10K Chunk
+     *
      * @var int
      */
     protected $streamChunk = 10240;
@@ -78,7 +79,7 @@ class AwsS3
     }
 
     /**
-     * @param $objectName
+     * @param  $objectName
      * @return int
      */
     public function countDownloadStreamChunks($objectName)
@@ -115,7 +116,7 @@ class AwsS3
     }
 
     /**
-     * @param int $offSet
+     * @param  int $offSet
      * @return null
      */
     public function getDownloadStream($offSet = 0)
@@ -225,17 +226,20 @@ class AwsS3
 
     /**
      * Saves an object to a local location
+     *
      * @param $s3filename
      * @param $localFilename
      */
     public function saveObject($s3filename, $localFilename)
     {
         try {
-            $this->s3Client->getObject([
+            $this->s3Client->getObject(
+                [
                 'Bucket' => $this->bucket,
                 'Key' => $s3filename,
                 'SaveAs' => $localFilename
-            ]);
+                ]
+            );
         } catch (S3Exception $e) {
             throw new \S3Exception(sprintf("Failed to get file '%s' from S3.", $s3filename));
         }
@@ -243,16 +247,19 @@ class AwsS3
 
     /**
      * Reads an object of off the S3 Bucket
-     * @param $s3filename
+     *
+     * @param  $s3filename
      * @return mixed
      */
     public function getObject($s3filename)
     {
         try {
-            $result = $this->s3Client->getObject([
+            $result = $this->s3Client->getObject(
+                [
                 'Bucket' => $this->bucket,
                 'Key' => $s3filename
-            ]);
+                ]
+            );
             return $result['Body'];
         } catch (S3Exception $e) {
             throw new \S3Exception(sprintf("Failed to read file '%s' from S3.", $s3filename));
@@ -260,18 +267,20 @@ class AwsS3
     }
 
     /**
-     * @param string $folder
-     * @param string $delimiter
+     * @param  string $folder
+     * @param  string $delimiter
      * @return mixed
      */
     public function listObjects($folder = '',$delimiter = '')
     {
         try {
-            return $this->s3Client->getIterator('ListObjects', array(
+            return $this->s3Client->getIterator(
+                'ListObjects', array(
                 "Bucket" => $this->bucket,
                 "Prefix" => $folder,
                 "Delimiter" => $delimiter
-            ));
+                )
+            );
         } catch (S3Exception $e) {
             throw new \S3Exception(sprintf("Failed to list objects in '%s' from S3.", $this->bucket));
         }
@@ -279,6 +288,7 @@ class AwsS3
 
     /**
      * Alternative name for deleteObject
+     *
      * @param $s3filename
      */
     public function removeObject($s3filename)
@@ -292,10 +302,12 @@ class AwsS3
     public function deleteObject($s3filename)
     {
         try {
-            $this->s3Client->deleteObject([
+            $this->s3Client->deleteObject(
+                [
                 'Bucket' => $this->bucket,
                 'Key' => $s3filename
-            ]);
+                ]
+            );
         } catch (S3Exception $e) {
             throw new \S3Exception(sprintf("Failed to delete file '%s' from S3.", $s3filename));
         }
