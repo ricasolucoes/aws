@@ -7,7 +7,7 @@ use \Aws\S3\StreamWrapper;
 
 class AwsS3
 {
-    private static $streamWrapper = null;
+    private static ?StreamWrapper $streamWrapper = null;
     /**
      * @var object
      */
@@ -40,47 +40,15 @@ class AwsS3
         $this->s3Client = S3Client::factory();
     }
 
-    public function getBucket()
-    {
-        return $this->bucket;
-    }
-
-    public function setBucket($bucket)
-    {
-        $this->bucket = $bucket;
-        $this->invalidateStatic();
-    }
-
-    private function invalidateStatic()
+    private function invalidateStatic(): void
     {
         self::$streamWrapper = null;
     }
 
-    public function setstreamChunk($value)
-    {
-        $this->streamChunk = $value;
-    }
-
     /**
      * @param $objectName
-     * @param null $chunks
-     */
-    public function openDownloadStream($objectName, $chunks = null)
-    {
-        $this->downloadStreamChunks = $chunks;
-        if (!$this->downloadStreamChunks) {
-            $this->downloadStreamChunks = $this->countDownloadStreamChunks($objectName);
-        }
-
-        $this->downloadStream = $this->getStreamWrapper();
-        $openedPath = null;
-
-        $this->downloadStream->stream_open(sprintf("s3://%s/%s", $this->bucket, $objectName), 'r', null, $openedPath);
-    }
-
-    /**
-     * @param  $objectName
-     * @return int
+     *
+     * @return int|int
      */
     public function countDownloadStreamChunks($objectName)
     {
@@ -116,79 +84,25 @@ class AwsS3
     }
 
     /**
-     * @param  int $offSet
-     * @return null
-     */
-    public function getDownloadStream($offSet = 0)
-    {
-        if (!$this->downloadStreamChunks) {
-            $this->closeDownloadStream();
-            return null;
-        }
-
-        if ($offSet > $this->downloadStreamChunks) {
-            $offSet = $this->downloadStreamChunks;
-        }
-
-        while (!$this->downloadStream->stream_eof()) {
-            $this->downloadStream->stream_seek($offSet * $this->streamChunk);
-            $data = $this->downloadStream->stream_read($this->streamChunk);
-            if ($offSet == $this->downloadStreamChunks) {
-                $this->closeDownloadStream();
-            }
-            return $data;
-        }
-    }
-
-    /**
      * Closes the download stream
+     *
+     * @return void
      */
-    public function closeDownloadStream()
+    public function closeDownloadStream(): void
     {
         $this->downloadStream->stream_close();
     }
 
-    /**
-     * @param $sourceFile
-     * @param $destinationFile
-     * @param string $acl
-     */
-    public function copyLocalObject($sourceFile, $destinationFile, $acl = 'bucket-owner-full-control')
-    {
-        $data = [
-            'ACL' => $acl,
-            'Bucket' => $this->bucket,
-            'Key' => $destinationFile,
-            'CopySource' => $this->bucket . '/' . $sourceFile
-        ];
-
-        try {
-            $this->s3Client->copyObject($data);
-        } catch (S3Exception $e) {
-            throw new \S3Exception(sprintf("Failed to copy file '%s' to '%s' in S3.", $sourceFile, $destinationFile));
-        }
-    }
-
-    /**
-     * @param $sourceBucket
-     * @param $sourceFile
-     * @param $destinationFile
-     * @param $acl
-     */
-    public function moveObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control')
-    {
-        $this->copyObject($sourceBucket, $sourceFile, $destinationFile, $acl);
-        $this->deleteObject($sourceFile);
-    }
-
 
     /**
      * @param $sourceBucket
      * @param $sourceFile
      * @param $destinationFile
      * @param string $acl
+     *
+     * @return void
      */
-    public function copyObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control')
+    public function copyObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control'): void
     {
         $data = [
             'ACL' => $acl,
@@ -208,8 +122,10 @@ class AwsS3
      * @param $localFilename
      * @param $s3filename
      * @param string $acl
+     *
+     * @return void
      */
-    public function putObject($localFilename, $s3filename, $acl = 'bucket-owner-full-control')
+    public function putObject($localFilename, $s3filename, $acl = 'bucket-owner-full-control'): void
     {
         $data = [
             'ACL' => $acl,
@@ -221,27 +137,6 @@ class AwsS3
             $this->s3Client->putObject($data);
         } catch (S3Exception $e) {
             throw new \S3Exception(sprintf("Failed to upload file '%s' to S3.", $s3filename));
-        }
-    }
-
-    /**
-     * Saves an object to a local location
-     *
-     * @param $s3filename
-     * @param $localFilename
-     */
-    public function saveObject($s3filename, $localFilename)
-    {
-        try {
-            $this->s3Client->getObject(
-                [
-                'Bucket' => $this->bucket,
-                'Key' => $s3filename,
-                'SaveAs' => $localFilename
-                ]
-            );
-        } catch (S3Exception $e) {
-            throw new \S3Exception(sprintf("Failed to get file '%s' from S3.", $s3filename));
         }
     }
 
@@ -267,39 +162,11 @@ class AwsS3
     }
 
     /**
-     * @param  string $folder
-     * @param  string $delimiter
-     * @return mixed
-     */
-    public function listObjects($folder = '',$delimiter = '')
-    {
-        try {
-            return $this->s3Client->getIterator(
-                'ListObjects', array(
-                "Bucket" => $this->bucket,
-                "Prefix" => $folder,
-                "Delimiter" => $delimiter
-                )
-            );
-        } catch (S3Exception $e) {
-            throw new \S3Exception(sprintf("Failed to list objects in '%s' from S3.", $this->bucket));
-        }
-    }
-
-    /**
-     * Alternative name for deleteObject
+     * @param $s3filename
      *
-     * @param $s3filename
+     * @return void
      */
-    public function removeObject($s3filename)
-    {
-        return $this->deleteObject($s3filename);
-    }
-
-    /**
-     * @param $s3filename
-     */
-    public function deleteObject($s3filename)
+    public function deleteObject($s3filename): void
     {
         try {
             $this->s3Client->deleteObject(

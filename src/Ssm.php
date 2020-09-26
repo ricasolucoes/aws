@@ -10,11 +10,22 @@ use \Aws\Ssm\SsmClient;
  */
 class Ssm
 {
+    /**
+     * @var string
+     */
     protected $region;
+
+    /**
+     * @var string
+     */
     protected $version;
-    protected $client;
-    protected $stash;
-    protected $maxConcurrency = "100";
+    protected SsmClient $client;
+
+    /**
+     * @var array
+     */
+    protected array $stash;
+    protected string $maxConcurrency = "100";
 
     /**
      * initialize - return authenticated ssm object
@@ -139,7 +150,7 @@ class Ssm
         return $commandId;
     }
 
-    public function isCommandFinished($commandId)
+    public function isCommandFinished($commandId): bool
     {
         $result = $this->client->listCommandInvocations(['CommandId' => $commandId]);
         $resultArray = $result->toArray();
@@ -162,7 +173,12 @@ class Ssm
     }
 
     // # returns an output array
-    public function getCommandOutput($commandId)
+    /**
+     * @return array[]
+     *
+     * @psalm-return list<array{InstanceId: mixed, InstanceName: mixed, Status: mixed}>
+     */
+    public function getCommandOutput($commandId): array
     {
         $result = $this->client->listCommandInvocations(['CommandId' => $commandId]);
         $resultArray = $result->toArray();
@@ -175,7 +191,12 @@ class Ssm
     }
 
 
-    public function getCommandShellOutput($commandId, $instanceId)
+    /**
+     * @return array
+     *
+     * @psalm-return array{stdout: mixed, stderr: mixed}
+     */
+    public function getCommandShellOutput($commandId, $instanceId): array
     {
         $result = $this->client->getCommandInvocation(
             [
@@ -188,7 +209,12 @@ class Ssm
     }
 
     // we can write this quite simply by internally calling getCommandOutput
-    public function getCommandOutputSuccessPercentage($commandId)
+    /**
+     * @return (int|int|string)[]
+     *
+     * @psalm-return array{invocations: int|int, successes: int|int, percentage: string}
+     */
+    public function getCommandOutputSuccessPercentage($commandId): array
     {
         $result = $this->getCommandOutput($commandId);
 
