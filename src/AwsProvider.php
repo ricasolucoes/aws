@@ -43,14 +43,14 @@ class AwsProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'aws');
         $this->publishes(
             [
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/aws'),
+            __DIR__.'/../resources/lang' => resource_path('lang'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'aws'),
             ]
         );
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'aws');
         $this->publishes(
             [
-            __DIR__.'/../resources/views' => resource_path('views/vendor/aws'),
+            __DIR__.'/../resources/views' => resource_path('views'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'aws'),
             ]
         );
 
