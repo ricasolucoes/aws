@@ -33,7 +33,7 @@ class AwsProvider extends ServiceProvider
         // });
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
+        $this->loadMigrationsFrom(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'migrations/');
         $this->publishes(
             [
             __DIR__.'/../database/migrations/' => database_path('migrations')
@@ -43,14 +43,14 @@ class AwsProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'aws');
         $this->publishes(
             [
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/aws'),
+            __DIR__.'/../resources/lang' => resource_path('lang'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'aws'),
             ]
         );
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'aws');
         $this->publishes(
             [
-            __DIR__.'/../resources/views' => resource_path('views/vendor/aws'),
+            __DIR__.'/../resources/views' => resource_path('views'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'aws'),
             ]
         );
 
