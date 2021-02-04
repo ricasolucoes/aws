@@ -8,7 +8,7 @@
     "homepage": "https://github.com/ricasolucoes/aws",
     "license": "MIT",
     "require": {
-        "php": "^7.4",
+        "php": "^7.2|^8.0",
         "ext-curl": "*",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.0",
