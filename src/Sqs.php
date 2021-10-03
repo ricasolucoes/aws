@@ -52,10 +52,11 @@ class Sqs
     /**
      * deleteMessage - try to delete a message from the queue
      *
-     * @param  array $msg Array Result from getMessage
-     * @return mixed
+     * @param array $msg Array Result from getMessage
+     *
+     * @return void
      */
-    public function deleteMessage($msg, $queueurl = false, $receiptHandle = false)
+    public function deleteMessage($msg, $queueurl = false, $receiptHandle = false): void
     {
         $data = [
             'QueueUrl' => $this->queueUrl,
@@ -174,9 +175,9 @@ class Sqs
     /**
      * sendMessages - send stashed messages.  useful for combining multiple sends into one api call to sqs - sqs limits to 10 messages per batch so we intelligently break it down into batches of up to 10 msgs and ensure everything is sent
      *
-     * @return mixed
+     * @return void
      */
-    public function sendMessages()
+    public function sendMessages(): void
     {
         $stashedTotal = count($this->stash);
 
@@ -229,9 +230,9 @@ class Sqs
     /**
      * sendMessagesNoBatching - send stashed messages without batching them
      *
-     * @return mixed
+     * @return void
      */
-    public function sendMessagesNoBatching()
+    public function sendMessagesNoBatching(): void
     {
         foreach ($this->stash as $stashed) {
             $msgFilename = $this->logMessage($stashed, 'unbatched');
@@ -333,10 +334,11 @@ class Sqs
     /**
      * setRegion - set the effective region
      *
-     * @param  string $region Aws region string
-     * @return string $region
+     * @param string $region Aws region string
+     *
+     * @return static $region
      */
-    public function setRegion($region)
+    public function setRegion($region): self
     {
         $this->region = $region;
         return $this;
@@ -354,9 +356,9 @@ class Sqs
     /**
      * setVersion - set the effective version
      *
-     * @return string $version
+     * @return static $version
      */
-    public function setVersion($version)
+    public function setVersion($version): self
     {
         $this->version = $version;
         return $this;
@@ -374,9 +376,9 @@ class Sqs
     /**
      * setQueueUrl - set the effective queueUrl
      *
-     * @return string $queueUrl
+     * @return static $queueUrl
      */
-    public function setQueueUrl($queueUrl)
+    public function setQueueUrl($queueUrl): self
     {
         $this->queueUrl = $queueUrl;
         return $this;

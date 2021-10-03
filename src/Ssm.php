@@ -139,7 +139,7 @@ class Ssm
         return $commandId;
     }
 
-    public function isCommandFinished($commandId)
+    public function isCommandFinished($commandId): bool
     {
         $result = $this->client->listCommandInvocations(['CommandId' => $commandId]);
         $resultArray = $result->toArray();
@@ -162,7 +162,12 @@ class Ssm
     }
 
     // # returns an output array
-    public function getCommandOutput($commandId)
+    /**
+     * @return array[]
+     *
+     * @psalm-return list<array{InstanceId: mixed, InstanceName: mixed, Status: mixed}>
+     */
+    public function getCommandOutput($commandId): array
     {
         $result = $this->client->listCommandInvocations(['CommandId' => $commandId]);
         $resultArray = $result->toArray();
@@ -175,7 +180,12 @@ class Ssm
     }
 
 
-    public function getCommandShellOutput($commandId, $instanceId)
+    /**
+     * @return array
+     *
+     * @psalm-return array{stdout: mixed, stderr: mixed}
+     */
+    public function getCommandShellOutput($commandId, $instanceId): array
     {
         $result = $this->client->getCommandInvocation(
             [
@@ -188,7 +198,12 @@ class Ssm
     }
 
     // we can write this quite simply by internally calling getCommandOutput
-    public function getCommandOutputSuccessPercentage($commandId)
+    /**
+     * @return (int|string)[]
+     *
+     * @psalm-return array{invocations: 0|positive-int, successes: 0|positive-int, percentage: string}
+     */
+    public function getCommandOutputSuccessPercentage($commandId): array
     {
         $result = $this->getCommandOutput($commandId);
 

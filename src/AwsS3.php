@@ -44,18 +44,18 @@ class AwsS3
         return $this->bucket;
     }
 
-    public function setBucket($bucket)
+    public function setBucket($bucket): void
     {
         $this->bucket = $bucket;
         $this->invalidateStatic();
     }
 
-    private function invalidateStatic()
+    private function invalidateStatic(): void
     {
         self::$streamWrapper = null;
     }
 
-    public function setstreamChunk($value)
+    public function setstreamChunk($value): void
     {
         $this->streamChunk = $value;
     }
@@ -63,8 +63,10 @@ class AwsS3
     /**
      * @param $objectName
      * @param null $chunks
+     *
+     * @return void
      */
-    public function openDownloadStream($objectName, $chunks = null)
+    public function openDownloadStream($objectName, $chunks = null): void
     {
         $this->downloadStreamChunks = $chunks;
         if (!$this->downloadStreamChunks) {
@@ -141,8 +143,10 @@ class AwsS3
 
     /**
      * Closes the download stream
+     *
+     * @return void
      */
-    public function closeDownloadStream()
+    public function closeDownloadStream(): void
     {
         $this->downloadStream->stream_close();
     }
@@ -151,8 +155,10 @@ class AwsS3
      * @param $sourceFile
      * @param $destinationFile
      * @param string $acl
+     *
+     * @return void
      */
-    public function copyLocalObject($sourceFile, $destinationFile, $acl = 'bucket-owner-full-control')
+    public function copyLocalObject($sourceFile, $destinationFile, $acl = 'bucket-owner-full-control'): void
     {
         $data = [
             'ACL' => $acl,
@@ -173,8 +179,10 @@ class AwsS3
      * @param $sourceFile
      * @param $destinationFile
      * @param $acl
+     *
+     * @return void
      */
-    public function moveObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control')
+    public function moveObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control'): void
     {
         $this->copyObject($sourceBucket, $sourceFile, $destinationFile, $acl);
         $this->deleteObject($sourceFile);
@@ -186,8 +194,10 @@ class AwsS3
      * @param $sourceFile
      * @param $destinationFile
      * @param string $acl
+     *
+     * @return void
      */
-    public function copyObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control')
+    public function copyObject($sourceBucket, $sourceFile, $destinationFile, $acl = 'bucket-owner-full-control'): void
     {
         $data = [
             'ACL' => $acl,
@@ -207,8 +217,10 @@ class AwsS3
      * @param $localFilename
      * @param $s3filename
      * @param string $acl
+     *
+     * @return void
      */
-    public function putObject($localFilename, $s3filename, $acl = 'bucket-owner-full-control')
+    public function putObject($localFilename, $s3filename, $acl = 'bucket-owner-full-control'): void
     {
         $data = [
             'ACL' => $acl,
@@ -225,10 +237,13 @@ class AwsS3
 
     /**
      * Saves an object to a local location
+     *
      * @param $s3filename
      * @param $localFilename
+     *
+     * @return void
      */
-    public function saveObject($s3filename, $localFilename)
+    public function saveObject($s3filename, $localFilename): void
     {
         try {
             $this->s3Client->getObject([
@@ -288,8 +303,10 @@ class AwsS3
 
     /**
      * @param $s3filename
+     *
+     * @return void
      */
-    public function deleteObject($s3filename)
+    public function deleteObject($s3filename): void
     {
         try {
             $this->s3Client->deleteObject([
